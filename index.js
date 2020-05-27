@@ -73,17 +73,35 @@ const onMovieSelect= async (movie, summaryElement, side) => {
 
 const runComparison = ()=>{
 
+    const leftSideStats = document.querySelectorAll('.left-summary .notification');
+    const rightSideStats = document.querySelectorAll('.right-summary .notification');
+
+    console.log(leftSideStats)
+
+    leftSideStats.forEach( (leftStat,index) =>{
+        const rightStat = rightSideStats[index];
+
+        const leftSideValue = leftStat.dataset.value;
+        const rightSideValue = rightStat.dataset.value;
+
+        if (leftSideValue > rightSideValue) {
+            rightStat.classList.remove('is-primary');
+            rightStat.classList.add('is-warning');
+        }
+        else{
+            leftStat.classList.remove('is-primary');
+            leftStat.classList.add('is-warning');
+        }
+        
+    })
 }
 
 const movieTemplate = (movieDetail) => {
 
-    //const dollars = movieDetail.data.BoxOffice.replace(/\$/g, '').replace(/\,/g, '');
+    const dollars = movieDetail.BoxOffice.replace(/\$/, '').replace(/\,/g, '');
     const metascore = parseInt(movieDetail.Metascore);
     const imdbRating = parseFloat(movieDetail.imdbRating);
     const imbdVotes = parseFloat(movieDetail.imdbVotes.replace(/\,/g, ''));
-
-    console.log(metascore,imdbRating, imbdVotes)
-
 
     const awards = movieDetail.Awards.split(' ').reduce((prev, word) =>{
         const value = parseInt(word);
@@ -93,7 +111,6 @@ const movieTemplate = (movieDetail) => {
         }
         else return prev + value;
     });
-
 
 
     return `
@@ -115,7 +132,7 @@ const movieTemplate = (movieDetail) => {
             <p class = "title">${movieDetail.Awards}</p>
             <p class = "subtitle">Awards</p>
         </article>
-        <article class="notification is-primary">
+        <article data-value = ${dollars} class="notification is-primary">
             <p class = "title">${movieDetail.BoxOffice}</p>
             <p class = "subtitle">Box Office</p>
         </article>
